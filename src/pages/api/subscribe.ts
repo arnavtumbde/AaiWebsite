@@ -1,3 +1,4 @@
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@sanity/client';
 
@@ -20,7 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Check if already subscribed
     const existing = await client.fetch(`*[_type == "subscriber" && email == $email][0]`, { email });
-    
+
     if (!existing) {
       await client.create({
         _type: 'subscriber',
@@ -28,14 +29,14 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    return new Response(JSON.stringify({ success: true }), { 
+    return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
-    
+
   } catch (error) {
     console.error('Subscription error:', error);
-    return new Response(JSON.stringify({ error: 'Failed to subscribe. Please try again later.' }), { 
+    return new Response(JSON.stringify({ error: 'Failed to subscribe. Please try again later.' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });

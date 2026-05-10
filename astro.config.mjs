@@ -5,8 +5,8 @@ import vercel from '@astrojs/vercel';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  output: 'hybrid', // Best setting for blogs with API routes
-  adapter: vercel(), // Do not put any includeFiles hacks in here
+  output: 'static', // <-- Changed from hybrid to static for Astro v5
+  adapter: vercel(),
   vite: {
     plugins: [tailwindcss()]
   },

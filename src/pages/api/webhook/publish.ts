@@ -1,3 +1,4 @@
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { createClient } from '@sanity/client';
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook';
@@ -18,39 +19,39 @@ export const POST: APIRoute = async ({ request, url }) => {
   try {
     const signature = request.headers.get(SIGNATURE_HEADER_NAME);
     const bodyText = await request.text();
-    
+
     // Validate Signature
     if (!secret || !signature || !isValidSignature(bodyText, signature, secret)) {
       console.warn("Webhook signature validation failed.");
       return new Response('Invalid signature', { status: 401 });
     }
-    
+
     const payload = JSON.parse(bodyText);
-    
+
     // Ensure this is a newly created/published post
     if (payload._type !== 'post') {
       return new Response('Not a post event', { status: 200 });
     }
-    
+
     const { title, slug, emailSummary } = payload;
-    
+
     if (!emailSummary || emailSummary.trim() === '') {
       console.log('No email summary provided. Skipping broadcast.');
       return new Response('Skipped: No email summary', { status: 200 });
     }
-    
+
     // Fetch all subscribers
-    const subscribers = await client.fetch<{email: string}[]>(`*[_type == "subscriber"]{ email }`);
-    
+    const subscribers = await client.fetch<{ email: string }[]>(`*[_type == "subscriber"]{ email }`);
+
     if (!subscribers || subscribers.length === 0) {
       console.log('No subscribers found.');
       return new Response('No subscribers', { status: 200 });
     }
-    
+
     const emails = subscribers.map(s => s.email);
     // Note: The origin might be local during dev, in prod Vercel provides the real URL
     const postUrl = new URL(`/blog/${slug?.current || ''}`, url.origin).toString();
-    
+
     // Prepare batched email payload
     const batch = emails.map(email => ({
       from: 'Editorial <hello@yourdomain.com>', // Replace with your verified Resend domain
@@ -68,16 +69,16 @@ export const POST: APIRoute = async ({ request, url }) => {
         </div>
       `,
     }));
-    
+
     // Broadcast via Resend
     await resend.batch.send(batch);
 
     console.log(`Successfully broadcasted to ${emails.length} subscribers.`);
-    return new Response(JSON.stringify({ success: true, sentCount: emails.length }), { 
+    return new Response(JSON.stringify({ success: true, sentCount: emails.length }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
-    
+
   } catch (error) {
     console.error('Webhook processing error:', error);
     return new Response(JSON.stringify({ error: 'Webhook processing failed' }), { status: 500 });
