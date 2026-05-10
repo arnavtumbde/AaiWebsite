@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import PostCard from '../components/PostCard.astro';
 import SubscribeForm from '../components/SubscribeForm.astro';
+import PublishedAuthor from '../components/PublishedAuthor.astro';
 
 import { sanityClient } from 'sanity:client';
 
@@ -57,5 +58,10 @@ const formatDate = (dateString: string) => {
   <!-- Newsletter Section -->
   <section class="mt-24 mb-12">
     <SubscribeForm />
+  </section>
+
+  <!-- Published Author Section -->
+  <section class="mb-24">
+    <PublishedAuthor />
   </section>
 </Layout>
