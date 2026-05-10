@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/Layout.astro';
+import AboutAstitva from '../components/AboutAstitva';
+
+// We disable the default layout margins by using a custom full-width layout,
+// but since we want to keep the header, we'll just override the main padding.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>Astitva | The Children's Narrative</title>
+    <meta name="description" content="She is no longer a shadow in someone else’s story. This is her Astitva." />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Tiro+Marathi:ital@0;1&display=swap" rel="stylesheet">
+    
+    <!-- We need the global CSS here too if we are bypassing Layout -->
+    <link rel="stylesheet" href="/src/styles/global.css">
+  </head>
+  <body class="min-h-screen bg-deep-charcoal text-warm-pearl antialiased overflow-x-hidden">
+    
+    <header class="fixed top-0 w-full z-50 px-6 py-8 mix-blend-difference text-warm-pearl">
+      <nav class="flex justify-between items-center max-w-4xl mx-auto">
+        <a href="/" class="text-2xl font-serif font-bold hover:text-warm-rust transition-colors duration-300">
+          Editorial.
+        </a>
+        <div class="space-x-6 text-sm font-medium">
+          <a href="/" class="hover:text-warm-rust transition-colors duration-300">Home</a>
+          <a href="/about" class="text-warm-rust transition-colors duration-300">About</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="w-full">
+      <AboutAstitva client:load />
+    </main>
+
+  </body>
+</html>

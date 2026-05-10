@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-warm-pearl: #FAFAFA;
+  --color-deep-charcoal: #111827;
+  --color-warm-rust: #C2410C;
+  --color-slate-gray: #475569;
+
+  --font-serif: 'Merriweather', 'Playfair Display', serif;
+  --font-sans: 'Inter', 'Lato', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
+  --font-marathi: 'Tiro Marathi', serif;
+}
+
+@layer base {
+  body {
+    @apply bg-warm-pearl text-deep-charcoal font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+
+  p {
+    @apply leading-relaxed;
+  }
+}

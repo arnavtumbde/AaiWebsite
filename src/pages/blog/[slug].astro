@@ -1,0 +1,85 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { sanityClient } from 'sanity:client';
+import { toHTML } from '@portabletext/to-html';
+
+const { slug } = Astro.params;
+
+const post = await sanityClient.fetch(`*[_type == "post" && slug.current == $slug][0] {
+  "slug": slug.current,
+  "imageUrl": mainImage.asset->url,
+  title,
+  publishedAt,
+  body,
+  excerpt,
+  "category": categories[0]->title
+}`, { slug });
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Convert Portable Text to HTML
+const bodyHtml = post.body ? toHTML(post.body) : '';
+
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+---
+
+<Layout 
+  title={`${post.title} | Editorial`} 
+  description={post.excerpt}
+  image={post.imageUrl || undefined}
+  type="article"
+>
+  <article class="max-w-3xl mx-auto py-12 md:py-20">
+    <!-- Header -->
+    <header class="text-center mb-16 space-y-6">
+      <span class="text-warm-rust font-medium uppercase tracking-wider text-sm">{post.category || 'Uncategorized'}</span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-serif">{post.title}</h1>
+      <div class="flex items-center justify-center gap-2 text-slate-gray">
+        <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+      </div>
+    </header>
+
+    <!-- Featured Image Placeholder (if no image in Sanity) -->
+    {post.imageUrl ? (
+      <img src={post.imageUrl} alt={post.title} class="w-full rounded-2xl mb-16 shadow-md" />
+    ) : (
+      <div class="w-full aspect-[21/9] rounded-2xl mb-16 bg-slate-200 flex items-center justify-center">
+        <span class="text-slate-gray italic">Featured Image Placeholder</span>
+      </div>
+    )}
+
+    <!-- Content -->
+    <div class="prose prose-lg prose-slate mx-auto font-sans leading-loose text-deep-charcoal" set:html={bodyHtml}>
+    </div>
+    
+    <!-- Footer/Author Bio -->
+    <footer class="mt-20 pt-10 border-t border-slate-gray/20 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+      <img src="/p1.png" alt="Author" class="w-24 h-24 rounded-full object-cover bg-slate-100" />
+      <div class="text-center sm:text-left">
+        <h3 class="font-serif font-bold text-2xl mb-2">Written by Mom</h3>
+        <p class="text-slate-gray leading-relaxed">
+          Sharing thoughts, stories, and reflections from a life well-lived. Grab a cup of tea and stay a while.
+        </p>
+      </div>
+    </footer>
+  </article>
+</Layout>
+
+<style is:global>
+  /* Basic styling for portable text HTML output */
+  .prose p { margin-bottom: 1.5em; }
+  .prose h2 { font-family: var(--font-serif); font-size: 2em; margin-top: 2em; margin-bottom: 0.5em; font-weight: bold; }
+  .prose h3 { font-family: var(--font-serif); font-size: 1.5em; margin-top: 1.5em; margin-bottom: 0.5em; font-weight: bold; }
+  .prose blockquote { border-left: 4px solid var(--color-warm-rust); padding-left: 1em; font-style: italic; color: var(--color-slate-gray); }
+  .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1.5em; }
+  .prose strong { font-weight: 600; color: var(--color-deep-charcoal); }
+  .prose a { color: var(--color-warm-rust); text-decoration: underline; text-underline-offset: 4px; }
+</style>

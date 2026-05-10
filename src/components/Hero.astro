@@ -1,0 +1,80 @@
+---
+// We will use an array for the 4 photos to create a beautiful, dynamic collage.
+// Replace these URLs with the names of your mother's photos in the public folder 
+// (e.g., "/photo-1.jpg", "/photo-2.jpg")
+const photos = [
+  "/ogp2.png", // Main portrait
+  "/ogp.png", // Landscape/Scenery
+  "/p1.png", // Detail/Tea/Books
+  "/p2.png"  // Candid or secondary portrait
+];
+---
+
+<section class="flex flex-col lg:flex-row items-center justify-between gap-16 py-16 md:py-24">
+  
+  <!-- Left Column: The Welcome Text -->
+  <div class="flex-1 space-y-8 text-center lg:text-left z-10">
+    <div class="space-y-4">
+      <span class="text-warm-rust font-medium uppercase tracking-widest text-sm">Welcome</span>
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] text-deep-charcoal">
+        Thoughts, Stories <br/> <span class="text-warm-rust italic font-serif font-light">& Reflections</span>
+      </h1>
+    </div>
+    
+    <p class="text-lg md:text-xl text-slate-gray max-w-lg leading-relaxed mx-auto lg:mx-0">
+      A digital garden where I share my experiences, musings on life, and the little things that make it beautiful. 
+    </p>
+    
+    <div class="pt-6 flex flex-col items-center lg:items-start">
+      <img src="/signature-placeholder.svg" alt="Author Signature" class="h-14 opacity-80 mix-blend-multiply" onerror="this.style.display='none'"/>
+      <p class="text-sm text-slate-gray mt-3 italic font-serif">Grab a cup of tea and stay a while.</p>
+    </div>
+  </div>
+
+  <!-- Right Column: The 4-Photo Editorial Collage -->
+  <div class="flex-1 w-full max-w-2xl relative flex items-center justify-center lg:justify-end min-h-[500px]">
+    
+    <!-- Decorative background shape -->
+    <div class="absolute w-[120%] h-[120%] bg-warm-rust/5 rounded-full blur-3xl -z-10"></div>
+
+    <div class="relative w-full aspect-square md:aspect-[4/3] lg:aspect-square max-w-[500px]">
+      
+      <!-- Photo 1: Main Portrait (Large, slightly off-center) -->
+      <div class="absolute top-0 right-8 w-3/5 aspect-[3/4] z-20 group">
+        <img 
+          src={photos[0]} 
+          alt="Main Portrait" 
+          class="w-full h-full object-cover rounded-2xl shadow-xl border-4 border-warm-pearl transition-transform duration-700 group-hover:-translate-y-2 group-hover:rotate-1"
+        />
+      </div>
+
+      <!-- Photo 2: Landscape/Scenery (Bottom Left, wide) -->
+      <div class="absolute bottom-4 left-0 w-1/2 aspect-[4/3] z-30 group">
+        <img 
+          src={photos[1]} 
+          alt="Scenery" 
+          class="w-full h-full object-cover rounded-xl shadow-lg border-4 border-warm-pearl transition-transform duration-700 group-hover:-translate-y-1 group-hover:-rotate-2"
+        />
+      </div>
+
+      <!-- Photo 3: Detail shot (Top Left, square) -->
+      <div class="absolute top-12 left-4 w-1/3 aspect-square z-10 group">
+        <img 
+          src={photos[2]} 
+          alt="Details" 
+          class="w-full h-full object-cover rounded-full shadow-md border-4 border-warm-pearl opacity-90 transition-all duration-700 group-hover:opacity-100 group-hover:scale-105"
+        />
+      </div>
+
+      <!-- Photo 4: Secondary/Candid (Bottom Right, small) -->
+      <div class="absolute -bottom-8 right-12 w-1/4 aspect-[3/4] z-40 group">
+        <img 
+          src={photos[3]} 
+          alt="Candid" 
+          class="w-full h-full object-cover rounded-lg shadow-md border-2 border-warm-pearl transition-transform duration-700 group-hover:rotate-3 group-hover:scale-110"
+        />
+      </div>
+
+    </div>
+  </div>
+</section>

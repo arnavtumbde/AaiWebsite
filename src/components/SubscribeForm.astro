@@ -1,0 +1,78 @@
+---
+---
+<div class="w-full max-w-xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-gray/10 text-center relative z-10">
+  <h3 class="text-2xl md:text-3xl font-serif font-bold text-deep-charcoal mb-4">Join the Reading List</h3>
+  <p class="text-slate-gray mb-8 leading-relaxed">
+    Subscribe to get notified whenever I publish a new story. No spam, just words from the heart.
+  </p>
+  
+  <form id="subscribe-form" class="flex flex-col sm:flex-row gap-3">
+    <input 
+      type="email" 
+      id="email-input" 
+      placeholder="Your email address..." 
+      required
+      class="flex-1 px-5 py-3 rounded-xl border border-slate-gray/20 bg-warm-pearl/30 focus:outline-none focus:ring-2 focus:ring-warm-rust/50 focus:border-warm-rust transition-all text-deep-charcoal"
+    />
+    <button 
+      type="submit" 
+      id="submit-button"
+      class="px-8 py-3 bg-deep-charcoal text-white font-medium rounded-xl hover:bg-warm-rust transition-colors duration-300 flex items-center justify-center min-w-[140px] shadow-sm"
+    >
+      <span id="button-text">Subscribe</span>
+      <svg id="loading-spinner" class="animate-spin hidden h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+    </button>
+  </form>
+  
+  <p id="form-message" class="mt-4 text-sm hidden"></p>
+</div>
+
+<script>
+  const form = document.getElementById('subscribe-form') as HTMLFormElement;
+  const emailInput = document.getElementById('email-input') as HTMLInputElement;
+  const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+  const buttonText = document.getElementById('button-text');
+  const loadingSpinner = document.getElementById('loading-spinner');
+  const formMessage = document.getElementById('form-message');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // UI Loading state
+    submitButton.disabled = true;
+    buttonText?.classList.add('hidden');
+    loadingSpinner?.classList.remove('hidden');
+    formMessage?.classList.add('hidden');
+    
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailInput.value }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        formMessage!.textContent = "Thank you for subscribing! You're on the list.";
+        formMessage!.className = "mt-4 text-sm text-green-600 font-medium";
+        formMessage!.classList.remove('hidden');
+        emailInput.value = '';
+      } else {
+        throw new Error(data.error || 'Something went wrong');
+      }
+    } catch (error: any) {
+      formMessage!.textContent = error.message;
+      formMessage!.className = "mt-4 text-sm text-warm-rust font-medium";
+      formMessage!.classList.remove('hidden');
+    } finally {
+      // Reset UI
+      submitButton.disabled = false;
+      buttonText?.classList.remove('hidden');
+      loadingSpinner?.classList.add('hidden');
+    }
+  });
+</script>
