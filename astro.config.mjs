@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sanity from '@sanity/astro';
-import vercel from '@astrojs/vercel';
+import vercel from '@astrojs/vercel/serverless';
 import react from '@astrojs/react';
 
 // https://astro.build/config
