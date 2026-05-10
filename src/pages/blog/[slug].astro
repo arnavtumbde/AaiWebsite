@@ -1,4 +1,25 @@
 ---
+
+import { createClient } from '@sanity/client';
+// ... your other imports
+
+export async function getStaticPaths() {
+  const client = createClient({
+    projectId: 'dmsuaqcf',
+    dataset: 'production',
+    useCdn: false,
+    apiVersion: '2023-05-03',
+  });
+
+  // Fetch all slugs from Sanity
+  const posts = await client.fetch(`*[_type == "post"]{ "params": { "slug": slug.current } }`);
+  
+  return posts;
+}
+
+const { slug } = Astro.params;
+// ... rest of your existing code to fetch the specific post
+
 import Layout from '../../layouts/Layout.astro';
 import { sanityClient } from 'sanity:client';
 import { toHTML } from '@portabletext/to-html';
